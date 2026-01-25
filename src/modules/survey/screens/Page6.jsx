@@ -59,19 +59,35 @@ const Page6 = () => {
     natural_sounds: 0,
   });
 
-  useEffect(() => {
-    if (!user) {
-      navigate("/user");
-      return;
-    }
-    fetchAudios();
-  }, [user, navigate]);
-  
+  // First useEffect: Get user (runs once)
+useEffect(() => {
+  const userProfile = getUserProfile();
+  if (!userProfile) {
+    navigate("/user");
+    return;
+  }
+  setUser(userProfile);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
+// Second useEffect: Fetch audios when user is loaded
+useEffect(() => {
+  if (!user) return; // Wait for user to be set
 
   const fetchAudios = async () => {
-    const data = await getAudios();
-    setAudios(data);
+    try {
+      const data = await getAudios();
+      setAudios(data);
+    } catch (error) {
+      console.error("Failed to fetch audios:", error);
+      alert("Failed to load audios");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  fetchAudios();
+}, [user]); // ← Run when user changes (only once)
 
   const handleSliderChange = (key, value) => {
     setRatings({ ...ratings, [key]: value });
