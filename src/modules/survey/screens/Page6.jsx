@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getAudios, saveAudioEvaluation } from "../api/audioApi";
+import { getUserProfile } from "../utils/storage"; // ← ADD THIS IMPORT
 import "../style/page6.css";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +12,6 @@ const dominanceLabels = [
   "Dominates completely",
 ];
 
-// Slider definitions (matches backend fields)
 const sliderItems = [
   { key: "pleasantness", label: "Pleasant" },
   { key: "chaotic", label: "Chaotic" },
@@ -23,7 +23,6 @@ const sliderItems = [
   { key: "monotonous", label: "Monotonous" },
 ];
 
-// Value → text mapping
 const getAgreementLabel = (value) => {
   if (value <= 12) return "Strongly agree";
   if (value <= 37) return "Somewhat agree";
@@ -36,10 +35,10 @@ const Page6 = () => {
   const audioRef = useRef(null);
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("userProfile"));
-
+  const [user, setUser] = useState(null); // ← ADD THIS
   const [audios, setAudios] = useState([]);
   const [index, setIndex] = useState(0);
+  const [loading, setLoading] = useState(true); // ← ADD THIS
 
   const [ratings, setRatings] = useState({
     pleasantness: 50,
@@ -60,34 +59,41 @@ const Page6 = () => {
   });
 
   // First useEffect: Get user (runs once)
-useEffect(() => {
-  const userProfile = getUserProfile();
-  if (!userProfile) {
-    navigate("/user");
-    return;
-  }
-  setUser(userProfile);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
-
-// Second useEffect: Fetch audios when user is loaded
-useEffect(() => {
-  if (!user) return; // Wait for user to be set
-
-  const fetchAudios = async () => {
-    try {
-      const data = await getAudios();
-      setAudios(data);
-    } catch (error) {
-      console.error("Failed to fetch audios:", error);
-      alert("Failed to load audios");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    const userProfile = getUserProfile();
+    if (!userProfile) {
+      navigate("/user");
+      return;
     }
-  };
+    setUser(userProfile);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  fetchAudios();
-}, [user]); // ← Run when user changes (only once)
+  // Second useEffect: Fetch audios when user is loaded
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchAudios = async () => {
+      try {
+        const data = await getAudios();
+        setAudios(data);
+      } catch (error) {
+        console.error("Failed to fetch audios:", error);
+        alert("Failed to load audios");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAudios();
+  }, [user]);
+
+  // Reset audio when index changes
+  useEffect(() => {
+    if (audioRef.current && audios[index]) {
+      audioRef.current.load();
+    }
+  }, [index, audios]);
 
   const handleSliderChange = (key, value) => {
     setRatings({ ...ratings, [key]: value });
@@ -118,9 +124,6 @@ useEffect(() => {
 
   const handleSaveAndNext = async () => {
     const audio = audios[index];
-    console.log("Audio object:", audios[index]);
-    console.log("Audio file URL:", audios[index]?.file);
-    console.log(audio);
 
     const payload = {
       audio: audio.id,
@@ -128,7 +131,7 @@ useEffect(() => {
       ...ratings,
       ...dominance,
     };
-    console.log(audio);
+
     try {
       await saveAudioEvaluation(payload);
 
@@ -138,54 +141,60 @@ useEffect(() => {
       } else {
         navigate("/thank-you");
       }
-    } catch {
+    } catch (error) {
+      console.error("Save error:", error);
       alert("Failed to save evaluation");
     }
   };
 
-  if (!audios.length) return <p>Loading...</p>;
+  const handleBack = () => {
+    if (index > 0) {
+      setIndex(index - 1);
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (!user) return <p>Loading user...</p>;
+  if (!audios.length) return <p>No audios available</p>;
 
   return (
     <div className="page6-container">
-      {/* Header */}
       <div className="page6-header">
-        <span>ID: {user.user_id}</span>
-        <span>Gender: {user.gender.toUpperCase()}</span>
+        <span>ID: {user.user_id || user.id}</span>
+        <span>Gender: {user.gender?.toUpperCase()}</span>
         <span>Age: {user.age}</span>
       </div>
 
-      <h3>AUDIO {index + 1}</h3>
+      <h3>AUDIO {index + 1} of {audios.length}</h3>
 
       <audio
         ref={audioRef}
         controls
-        src={audios[index].file}
+        crossOrigin="anonymous"
         className="audio-player"
-      />
+      >
+        <source src={audios[index].file} type="audio/mpeg" />
+        <source src={audios[index].file} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
 
-      {/* Sliders */}
       {sliderItems.map(({ key, label }) => (
         <div className="slider-group" key={key}>
-          {/* Dynamic heading (like image) */}
           <h4 className="slider-heading">
             {label} — <span>{getAgreementLabel(ratings[key])}</span>
           </h4>
-
           <input
             type="range"
             min="0"
             max="100"
             step="1"
             value={ratings[key]}
-            onChange={(e) =>
-              handleSliderChange(key, Number(e.target.value))
-            }
+            onChange={(e) => handleSliderChange(key, Number(e.target.value))}
           />
           <span className="slider-value">{ratings[key]}</span>
         </div>
       ))}
 
-      {/* Dominance matrix */}
       <table className="dominance-table">
         <thead>
           <tr>
@@ -220,11 +229,15 @@ useEffect(() => {
       </table>
 
       <div className="page6-footer">
-        <button className="back-btn" onClick={() => setIndex(index - 1)}>
+        <button 
+          className="back-btn" 
+          onClick={handleBack}
+          disabled={index === 0}
+        >
           Back
         </button>
         <button className="next-btn" onClick={handleSaveAndNext}>
-          Next
+          {index < audios.length - 1 ? 'Next' : 'Finish'}
         </button>
       </div>
     </div>
