@@ -1,4 +1,5 @@
-const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api";
+// const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api";
+const BASE_URL = "http://localhost:8000/api";
 
 /**
  * Fetch all noise sensitivity questions
@@ -21,6 +22,7 @@ export const getQuestions = async () => {
  * Save a single response
  */
 export const saveQuestionResponse = async (payload) => {
+  console.log("Payload for the saveQuestion is :",payload)
   const response = await fetch(`${BASE_URL}/noise-responses/`, {
     method: "POST",
     headers: {

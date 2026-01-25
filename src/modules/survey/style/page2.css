@@ -27,17 +27,31 @@
   
   .gender-btn {
     width: 45%;
-    padding: 18px;
+    padding: 16px;
     font-size: 16px;
-    color: white;
-    background: #1f1f1f;
-    border: none;
+    font-weight: 600;
+    color: #000;
+    background: #fff;
+    border: 2px solid #000;
     cursor: pointer;
-    box-shadow: 0 4px 0 black;
+    transition: all 0.2s ease;
   }
   
+  /* Hover (optional but nice) */
+  .gender-btn:hover {
+    background: #f2f2f2;
+  }
+  
+  /* Active / selected */
   .gender-btn.active {
-    background: black;
+    background: #000;
+    color: #fff;
+    border: 2px solid #000;
+  }
+  
+  /* Optional: pressed effect */
+  .gender-btn:active {
+    transform: scale(0.98);
   }
   
   .next-btn {

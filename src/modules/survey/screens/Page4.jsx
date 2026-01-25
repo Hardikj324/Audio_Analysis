@@ -2,13 +2,15 @@ import React,{useEffect,useState} from "react";
 import { getQuestions, saveQuestionResponse  } from "../api/questionsApi";
 import "../style/page4.css";
 import { useNavigate } from "react-router-dom";
+import { getUserProfile } from "../utils/storage";
 
 const Page4 = () =>{
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
     const [loading, setLoading] = useState(true);
 
-    const userId = localStorage.getItem("userProfile").id;
+    const userProfile = getUserProfile();
+    const userId = userProfile ? userProfile.user_id : null; 
     const navigate = useNavigate();
 
     useEffect(() => {

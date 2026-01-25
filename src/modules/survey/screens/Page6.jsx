@@ -23,13 +23,7 @@ const sliderItems = [
   { key: "monotonous", label: "Monotonous" },
 ];
 
-const getAgreementLabel = (value) => {
-  if (value <= 12) return "Strongly agree";
-  if (value <= 37) return "Somewhat agree";
-  if (value <= 62) return "Neither agree nor disagree";
-  if (value <= 87) return "Somewhat disagree";
-  return "Strongly disagree";
-};
+
 
 const Page6 = () => {
   const audioRef = useRef(null);
@@ -181,17 +175,30 @@ const Page6 = () => {
       {sliderItems.map(({ key, label }) => (
         <div className="slider-group" key={key}>
           <h4 className="slider-heading">
-            {label} — <span>{getAgreementLabel(ratings[key])}</span>
+            {label} - <span className="slider-value">{ratings[key]}</span>
           </h4>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value={ratings[key]}
-            onChange={(e) => handleSliderChange(key, Number(e.target.value))}
-          />
-          <span className="slider-value">{ratings[key]}</span>
+          <div className="slider-row">
+            <span className="slider-end">0</span>
+
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={ratings[key]}
+              onChange={(e) => handleSliderChange(key, Number(e.target.value))}
+              className="scale-slider"
+            />
+
+            <span className="slider-end">100</span>
+          </div>
+              <div className="scale-labels">
+                <span>Strongly agree</span>
+                <span>Somewhat agree</span>
+                <span>Neither agree nor disagree</span>
+                <span>Somewhat disagree</span>
+                <span>Strongly disagree</span>
+              </div>
         </div>
       ))}
 

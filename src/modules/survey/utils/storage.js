@@ -1,8 +1,4 @@
-export const saveUserProfile = (userProfile) => {
-    localStorage.setItem("userProfile", JSON.stringify(userProfile));
-  };
-  
-  export const getUserProfile = () => {
+ export const getUserProfile = () => {
     const profile = localStorage.getItem("userProfile");
     try {
       return profile ? JSON.parse(profile) : null;
@@ -12,6 +8,6 @@ export const saveUserProfile = (userProfile) => {
     }
   };
   
-  export const clearUserProfile = () => {
+export const clearUserProfile = () => {
     localStorage.removeItem("userProfile");
   };

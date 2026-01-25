@@ -26,7 +26,7 @@ const Page7 = () => {
         Thank you for submitting your response.
       </h1>
 
-      <p className="page7-info">
+      {/* <p className="page7-info">
         For further details regarding this survey please contact:
         <br />
         <strong>
@@ -61,7 +61,7 @@ const Page7 = () => {
         <button className="copy-btn" onClick={handleCopy}>
           Copy
         </button>
-      </div>
+      </div> */}
 
       <button className="repeat-btn" onClick={handleRepeat}>
         Repeat
