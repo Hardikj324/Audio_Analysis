@@ -65,7 +65,8 @@ const Page6 = () => {
       return;
     }
     fetchAudios();
-  }, []);
+  }, [user, navigate]);
+  
 
   const fetchAudios = async () => {
     const data = await getAudios();
