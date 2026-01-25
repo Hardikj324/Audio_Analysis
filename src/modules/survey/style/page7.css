@@ -1,0 +1,73 @@
+.page7-container {
+    min-height: 100vh;
+    padding: 40px 20px;
+    text-align: center;
+    background: white;
+  }
+  
+  .page7-emoji {
+    font-size: 80px;
+    margin-bottom: 20px;
+  }
+  
+  .page7-title {
+    color: red;
+    font-size: 28px;
+    margin-bottom: 25px;
+  }
+  
+  .page7-info {
+    font-size: 16px;
+    margin-bottom: 25px;
+  }
+  
+  .page7-info a {
+    color: #1a73e8;
+    text-decoration: underline;
+  }
+  
+  .page7-guided {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .page7-success {
+    color: green;
+    margin-bottom: 20px;
+  }
+  
+  .page7-data-box {
+    width: 80%;
+    max-width: 900px;
+    margin: 0 auto 30px;
+    border: 2px solid black;
+    padding: 15px;
+  }
+  
+  .page7-textarea {
+    width: 100%;
+    height: 120px;
+    resize: none;
+    border: none;
+    outline: none;
+    font-size: 14px;
+  }
+  
+  .copy-btn {
+    margin-top: 10px;
+    padding: 8px 25px;
+    border: 1.5px solid black;
+    background: white;
+    cursor: pointer;
+  }
+  
+  .repeat-btn {
+    margin-top: 20px;
+    padding: 16px 60px;
+    border: 2px solid black;
+    background: white;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 black;
+  }
+  

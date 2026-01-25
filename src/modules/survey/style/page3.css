@@ -1,0 +1,22 @@
+.page3-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: white;
+    padding: 20px;
+  }
+  
+  .page3-title {
+    font-size: 32px;
+    font-weight: normal;
+    margin-bottom: 20px;
+  }
+  
+  .page3-subtitle {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 80px;
+  }

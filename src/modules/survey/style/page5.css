@@ -1,0 +1,29 @@
+.page5-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: white;
+    padding: 20px;
+  }
+  
+  .page5-title {
+    font-size: 32px;
+    font-weight: normal;
+    margin-bottom: 30px;
+  }
+  
+  .page5-list {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 80px;
+    list-style-type: disc;
+    text-align: left;
+  }
+  
+  .page5-list li {
+    margin-bottom: 10px;
+  }
+  
