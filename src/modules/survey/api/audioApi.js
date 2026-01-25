@@ -1,4 +1,4 @@
-const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api/";
+const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api";
 
 
 export const getAudios = async () => {

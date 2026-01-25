@@ -1,4 +1,4 @@
-const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api/";
+const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api";
 
 export const createUser = async (payload) => {
   const response = await fetch(`${BASE_URL}/users/`, {
