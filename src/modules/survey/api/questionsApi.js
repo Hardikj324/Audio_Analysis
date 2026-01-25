@@ -4,7 +4,11 @@ const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api";
  * Fetch all noise sensitivity questions
  */
 export const getQuestions = async () => {
-  const response = await fetch(`${BASE_URL}/noise-questions/`);
+  const response = await fetch(`${BASE_URL}/noise-questions/`, {
+    headers: {
+      "ngrok-skip-browser-warning": "true"
+    }
+  });
 
   if (!response.ok) {
     throw new Error("Failed to fetch questions");
@@ -21,6 +25,7 @@ export const saveQuestionResponse = async (payload) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": "true"
     },
     body: JSON.stringify(payload),
   });
