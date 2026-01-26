@@ -117,6 +117,18 @@ const Page6 = () => {
     });
   };
 
+  const handleAudioError = (e) => {
+    const audioEl = e.target;
+    console.error("Audio element error event:", e);
+    console.error("currentSrc:", audioEl.currentSrc);
+    console.error("src:", audioEl.src);
+    console.error("readyState:", audioEl.readyState); // 0 = HAVE_NOTHING ... 4 = HAVE_ENOUGH_DATA
+    console.error("networkState:", audioEl.networkState); // 0 = NETWORK_EMPTY ... 3 = NETWORK_NO_SOURCE
+    if (audioEl.error) {
+      console.error("MediaError code:", audioEl.error.code);
+      // codes: 1 = MEDIA_ERR_ABORTED, 2 = MEDIA_ERR_NETWORK, 3 = MEDIA_ERR_DECODE, 4 = MEDIA_ERR_SRC_NOT_SUPPORTED
+    }
+  };
   const handleSaveAndNext = async () => {
     const audio = audios[index];
 
@@ -167,7 +179,7 @@ const Page6 = () => {
           controls
           crossOrigin="anonymous"
           src={`https://alaine-nonpursuant-adhesively.ngrok-free.dev/api/audios/${audios[index].id}/stream/`}
-          onError={(e) => console.error("Audio error", e)}
+          onError={handleAudioError}
         >
           Your browser does not support the audio element.
         </audio>
