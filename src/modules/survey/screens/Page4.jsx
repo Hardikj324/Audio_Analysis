@@ -10,7 +10,7 @@ const Page4 = () =>{
     const [loading, setLoading] = useState(true);
 
     const userProfile = getUserProfile();
-    const userId = userProfile ? userProfile.user_id : null; 
+    const userId = userProfile?.id;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,10 +33,15 @@ const Page4 = () =>{
     const handleSubmit = async () => {
         try{
             for (const q of questions){
+                const rating = answers[q.id];
+
+                if (rating === undefined) {
+                    continue;
+                }
                 await saveQuestionResponse ({
                     user: userId,
                     question: q.id,
-                    rating: answers[q.id],
+                    rating: rating,
                   });
             }
             navigate("/perception-intro");

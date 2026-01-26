@@ -29,10 +29,10 @@ const Page6 = () => {
   const audioRef = useRef(null);
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(null); // ← ADD THIS
+  const [user, setUser] = useState(null); 
   const [audios, setAudios] = useState([]);
   const [index, setIndex] = useState(0);
-  const [loading, setLoading] = useState(true); // ← ADD THIS
+  const [loading, setLoading] = useState(true); 
 
   const [ratings, setRatings] = useState({
     pleasantness: 50,
@@ -86,6 +86,7 @@ const Page6 = () => {
   useEffect(() => {
     if (audioRef.current && audios[index]) {
       audioRef.current.load();
+      console.log("Current Audio is:",audios[index])
     }
   }, [index, audios]);
 
@@ -161,21 +162,17 @@ const Page6 = () => {
 
       <h3>AUDIO {index + 1} of {audios.length}</h3>
 
-      <audio
-        ref={audioRef}
-        controls
-        crossOrigin="anonymous"
-        className="audio-player"
-      >
-        <source src={audios[index].file} type="audio/mpeg" />
-        <source src={audios[index].file} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
+        <audio
+          ref={audioRef}
+          controls
+          className="audio-player"
+          src={audios[index].file}
+        />
 
       {sliderItems.map(({ key, label }) => (
         <div className="slider-group" key={key}>
           <h4 className="slider-heading">
-            {label} - <span className="slider-value">{ratings[key]}</span>
+            {label} : <span className="slider-value">{ratings[key]}</span>
           </h4>
           <div className="slider-row">
             <span className="slider-end">0</span>

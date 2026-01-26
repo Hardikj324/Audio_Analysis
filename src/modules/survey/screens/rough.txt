@@ -1,0 +1,25 @@
+
+
+lang = {
+    "Hindi": {
+        "Lable":"Hi"
+        "Pleasant":"मधुर"
+        "Strongly agree":"मधुर"
+},
+"English": {
+     "Lable":"Eng",
+     "Pleasant":"Pleasant",
+     "Strongly agree":"Strongly agree"
+}
+}
+
+
+
+Pleasant                       -  मधुर 
+Caotic                         -  कोलाहलपूर्ण 
+Vibrant                          -  गुंंजायमान 
+Uneventful                    -  शांत 
+Calm                             -  नीरव 
+Annoying                      -  कष्टप्रद
+Eventful                        - हलचलपूर्ण
+Monotonous                  - नीरस

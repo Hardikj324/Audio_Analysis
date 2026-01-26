@@ -1,5 +1,5 @@
-const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api";
-// const BASE_URL = "http://localhost:8000/api";
+import {BASE_URL} from "./url"
+
 export const getAudios = async () => {
   const res = await fetch(`${BASE_URL}/audios/`, {
     headers: {
