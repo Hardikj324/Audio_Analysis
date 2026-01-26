@@ -1,5 +1,5 @@
-// const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api";
-const BASE_URL = "http://localhost:8000/api";
+const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api";
+// const BASE_URL = "http://localhost:8000/api";
 
 /**
  * Fetch all noise sensitivity questions
