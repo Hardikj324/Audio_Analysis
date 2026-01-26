@@ -5,13 +5,13 @@ import "../style/page7.css";
 const Page7 = () => {
   const navigate = useNavigate();
 
-  const finalData =
-    localStorage.getItem("finalCsvData") || "No data available";
+  // const finalData =
+  //   localStorage.getItem("finalCsvData") || "No data available";
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(finalData);
-    alert("Copied to clipboard");
-  };
+  // const handleCopy = () => {
+  //   navigator.clipboard.writeText(finalData);
+  //   alert("Copied to clipboard");
+  // };
 
   const handleRepeat = () => {
     localStorage.clear();
