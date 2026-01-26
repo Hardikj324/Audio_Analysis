@@ -165,9 +165,12 @@ const Page6 = () => {
         <audio
           ref={audioRef}
           controls
-          className="audio-player"
-          src={audios[index].file}
-        />
+          crossOrigin="anonymous"
+          src={`https://alaine-nonpursuant-adhesively.ngrok-free.dev/api/audios/${audios[index].id}/stream/`}
+          onError={(e) => console.error("Audio error", e)}
+        >
+          Your browser does not support the audio element.
+        </audio>
 
       {sliderItems.map(({ key, label }) => (
         <div className="slider-group" key={key}>
