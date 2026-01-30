@@ -266,7 +266,7 @@ const Page6 = () => {
   if (!user) return <div className="page6-container"><p>Loading user...</p></div>;
   if (!audios.length) return <div className="page6-container"><p>No audios available</p></div>;
 
-  const currentAudio = audios[index];
+  
 
   return (
     <div className="page6-container">
