@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getAudios, saveAudioEvaluation } from "../api/audioApi";
-import { getUserProfile } from "../utils/storage"; // ← ADD THIS IMPORT
+import { getUserProfile } from "../utils/storage";
 import "../style/page6.css";
 import { useNavigate } from "react-router-dom";
+
+const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api";
 
 const dominanceLabels = [
   "Not at all",
@@ -23,8 +25,6 @@ const sliderItems = [
   { key: "monotonous", label: "Monotonous" },
 ];
 
-
-
 const Page6 = () => {
   const audioRef = useRef(null);
   const navigate = useNavigate();
@@ -32,7 +32,9 @@ const Page6 = () => {
   const [user, setUser] = useState(null); 
   const [audios, setAudios] = useState([]);
   const [index, setIndex] = useState(0);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const [audioError, setAudioError] = useState(null);
+  const [audioLoading, setAudioLoading] = useState(false);
 
   const [ratings, setRatings] = useState({
     pleasantness: 50,
@@ -52,7 +54,7 @@ const Page6 = () => {
     natural_sounds: 0,
   });
 
-  // First useEffect: Get user (runs once)
+  // Get user profile
   useEffect(() => {
     const userProfile = getUserProfile();
     if (!userProfile) {
@@ -60,16 +62,16 @@ const Page6 = () => {
       return;
     }
     setUser(userProfile);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigate]);
 
-  // Second useEffect: Fetch audios when user is loaded
+  // Fetch audios
   useEffect(() => {
     if (!user) return;
 
     const fetchAudios = async () => {
       try {
         const data = await getAudios();
+        console.log("Fetched audios:", data);
         setAudios(data);
       } catch (error) {
         console.error("Failed to fetch audios:", error);
@@ -82,12 +84,124 @@ const Page6 = () => {
     fetchAudios();
   }, [user]);
 
-  // Reset audio when index changes
+  // Load audio using Blob URL method (more reliable for CORS)
   useEffect(() => {
-    if (audioRef.current && audios[index]) {
-      audioRef.current.load();
-      console.log("Current Audio is:",audios[index])
-    }
+    if (!audioRef.current || !audios[index]) return;
+
+    const audio = audioRef.current;
+    const currentAudio = audios[index];
+    
+    // TRY BOTH URLs - stream endpoint and original file
+    const streamUrl = `${BASE_URL}/stream-audio/${currentAudio.id}/`;
+    const directUrl = currentAudio.file;
+    
+    console.log("🎵 Audio URLs:", {
+      index,
+      id: currentAudio.id,
+      title: currentAudio.title,
+      streamUrl: streamUrl,
+      directUrl: directUrl
+    });
+    
+    // TEMPORARY: Try direct URL first to verify audio files work
+    const audioUrl = streamUrl; // Change to directUrl if stream fails
+
+    setAudioError(null);
+    setAudioLoading(true);
+
+    // Fetch audio as blob, then create object URL
+    fetch(audioUrl, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    })
+    .then(response => {
+      console.log("🎵 Response status:", response.status);
+      console.log("🎵 Response headers:", {
+        contentType: response.headers.get('content-type'),
+        contentLength: response.headers.get('content-length'),
+        acceptRanges: response.headers.get('accept-ranges')
+      });
+
+      // CHECK: Is server returning audio or error page?
+      const contentType = response.headers.get('content-type');
+      console.log("🎵 Content-Type received:", contentType);
+      
+      if (!contentType || !contentType.includes('audio')) {
+        console.error("❌ Server didn't return audio! Content-Type:", contentType);
+        // Read response as text to see what Django sent
+        return response.text().then(text => {
+          console.error("❌ Response body (first 500 chars):", text.substring(0, 500));
+          throw new Error(`Expected audio/*, got ${contentType || 'no content-type'}. Check Django logs.`);
+        });
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return response.blob();
+    })
+    .then(blob => {
+      console.log("🎵 Blob received:", blob.size, "bytes, type:", blob.type);
+      
+      // Create object URL from blob
+      const blobUrl = URL.createObjectURL(blob);
+      console.log("🎵 Created blob URL:", blobUrl);
+      
+      // Set audio source to blob URL
+      audio.src = blobUrl;
+      audio.load();
+      
+      setAudioLoading(false);
+      
+      // Cleanup: revoke blob URL when component unmounts or index changes
+      return () => {
+        URL.revokeObjectURL(blobUrl);
+      };
+    })
+    .catch(error => {
+      console.error("🎵 Failed to load audio:", error);
+      setAudioError(`Failed to load audio: ${error.message}`);
+      setAudioLoading(false);
+    });
+
+    // Error handler for audio element
+    const handleError = (e) => {
+      console.error("🎵 Audio element error:", {
+        error: e,
+        audioError: audio.error,
+        networkState: audio.networkState,
+        readyState: audio.readyState
+      });
+      
+      let errorMsg = "Failed to play audio";
+      if (audio.error) {
+        switch (audio.error.code) {
+          case 1: errorMsg = "Audio loading aborted"; break;
+          case 2: errorMsg = "Network error"; break;
+          case 3: errorMsg = "Audio decoding failed"; break;
+          case 4: errorMsg = "Audio format not supported"; break;
+          default: errorMsg = "Unknown audio error";
+        }
+      }
+      setAudioError(errorMsg);
+      setAudioLoading(false);
+    };
+
+    const handleCanPlay = () => {
+      console.log("🎵 Audio ready to play");
+      setAudioError(null);
+      setAudioLoading(false);
+    };
+
+    audio.addEventListener('error', handleError);
+    audio.addEventListener('canplay', handleCanPlay);
+
+    return () => {
+      audio.removeEventListener('error', handleError);
+      audio.removeEventListener('canplay', handleCanPlay);
+    };
   }, [index, audios]);
 
   const handleSliderChange = (key, value) => {
@@ -148,9 +262,11 @@ const Page6 = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (!user) return <p>Loading user...</p>;
-  if (!audios.length) return <p>No audios available</p>;
+  if (loading) return <div className="page6-container"><p>Loading...</p></div>;
+  if (!user) return <div className="page6-container"><p>Loading user...</p></div>;
+  if (!audios.length) return <div className="page6-container"><p>No audios available</p></div>;
+
+  const currentAudio = audios[index];
 
   return (
     <div className="page6-container">
@@ -161,13 +277,39 @@ const Page6 = () => {
       </div>
 
       <h3>AUDIO {index + 1} of {audios.length}</h3>
+    
+      {audioLoading && (
+        <div style={{ 
+          padding: '10px', 
+          backgroundColor: '#e3f2fd',
+          marginBottom: '10px',
+          borderRadius: '4px'
+        }}>
+          Loading audio...
+        </div>
+      )}
 
-        <audio
-          ref={audioRef}
-          controls
-          className="audio-player"
-          src={audios[index].file}
-        />
+      <audio
+        ref={audioRef}
+        controls
+        preload="metadata"
+        className="audio-player"
+      />
+
+      {audioError && (
+        <div style={{ 
+          color: 'red', 
+          padding: '10px', 
+          border: '1px solid red',
+          marginBottom: '20px',
+          borderRadius: '4px',
+          backgroundColor: '#ffe6e6'
+        }}>
+          <strong>⚠ Audio Error:</strong> {audioError}
+          <br />
+          <small>Check console for details. Try refreshing the page.</small>
+        </div>
+      )}
 
       {sliderItems.map(({ key, label }) => (
         <div className="slider-group" key={key}>
@@ -189,13 +331,13 @@ const Page6 = () => {
 
             <span className="slider-end">100</span>
           </div>
-              <div className="scale-labels">
-                <span>Strongly agree</span>
-                <span>Somewhat agree</span>
-                <span>Neither agree nor disagree</span>
-                <span>Somewhat disagree</span>
-                <span>Strongly disagree</span>
-              </div>
+          <div className="scale-labels">
+            <span>Strongly agree</span>
+            <span>Somewhat agree</span>
+            <span>Neither agree nor disagree</span>
+            <span>Somewhat disagree</span>
+            <span>Strongly disagree</span>
+          </div>
         </div>
       ))}
 

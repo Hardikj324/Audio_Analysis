@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../style/page1.css";
 
-import logo from "../../../assets/Screenshot 2025-12-19 162635.png";
+import logo from "../../../assets/Front_Page.jpeg";
 
 const Page1 = () => {
   const navigate = useNavigate();
