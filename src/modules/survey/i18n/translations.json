@@ -1,0 +1,62 @@
+{
+    "en": {
+      "language_name": "English",
+  
+      "traffic_noise": "Traffic noise (e.g. cars, buses, trains, airplanes)",
+      "other_noise": "Other noise (e.g. sirens, construction, industry, loading of goods)",
+      "human_sounds": "Sounds from human beings (e.g. conversation, laughter, children at play, footsteps)",
+      "natural_sounds": "Natural sounds (e.g. singing birds, flowing water, wind in vegetation)",
+  
+      "not_at_all": "Not at all",
+      "a_little": "A little",
+      "moderately": "Moderately",
+      "a_lot": "A lot",
+      "dominates": "Dominates completely",
+  
+      "pleasant": "Pleasant",
+      "chaotic": "Chaotic",
+      "vibrant": "Vibrant",
+      "uneventful": "Uneventful",
+      "calm": "Calm",
+      "annoying": "Annoying",
+      "eventful": "Eventful",
+      "monotonous": "Monotonous",
+
+      "Strongly agree" : "Strongly agree",
+      "Somewhat agree" : "Somewhat agree",
+      "Neither agree nor disagree" : "Neither agree nor disagree",
+      "Somewhat disagree" : "Somewhat disagree",
+      "Strongly disagree" : "Strongly disagree"
+    },
+  
+    "hi": {
+      "language_name": "हिंदी",
+  
+      "traffic_noise": "यातायात का शोर (जैसे कार, बस, ट्रेन, हवाई जहाज़)",
+      "other_noise": "अन्य प्रकार का शोर (जैसे सायरन, निर्माण कार्य, उद्योग, सामान लोड करना)",
+      "human_sounds": "लोगों की आवाज़ें (जैसे बातचीत, हँसी, बच्चों का खेलना, पैरों की आवाज़)",
+      "natural_sounds": "प्राकृतिक ध्वनियाँ (जैसे चहचहाते पक्षी, बहता पानी, पेड़ों में हवा)",
+  
+      "not_at_all": "बिल्कुल नहीं",
+      "a_little": "थोड़ा",
+      "moderately": "मध्यम रूप से",
+      "a_lot": "काफी अधिक",
+      "dominates": "पूरी तरह हावी",
+  
+      "pleasant": "सुहावना",
+      "chaotic": "शोरगुल",
+      "vibrant": "जीवंत",
+      "uneventful": "निष्क्रिय",
+      "calm": "शांत",
+      "annoying": "कष्टदायक",
+      "eventful": "हलचलपूर्ण",
+      "monotonous": "एकरस",
+
+      "Strongly agree" : "पूरी तरह सहमत",
+      "Somewhat agree" : "कुछ हद तक सहमत",
+      "Neither agree nor disagree" : "न तो सहमत, न असहमत",
+      "Somewhat disagree" : "कुछ हद तक असहमत",
+      "Strongly disagree" : "पूरी तरह असहमत"
+    }
+  }
+  
