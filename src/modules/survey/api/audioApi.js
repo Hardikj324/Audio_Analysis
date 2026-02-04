@@ -21,6 +21,12 @@ export const saveAudioEvaluation = async (payload) => {
     body: JSON.stringify(payload),
   });
 
-  if (!res.ok) throw new Error("Failed to save evaluation");
-  return res.json();
+  const text = await res.text();   
+  console.log("STATUS:", res.status);
+  console.log("RESPONSE:", text);
+
+  if (!res.ok) {
+    throw new Error(text || `HTTP ${res.status}`);
+  }
+  return JSON.parse(text);
 };
