@@ -1,31 +1,35 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext , useEffect, useRef, useState } from "react";
 import { getAudios, saveAudioEvaluation } from "../api/audioApi";
 import { getUserProfile } from "../utils/storage";
 import "../style/page6.css";
 import { useNavigate } from "react-router-dom";
+import {BASE_URL} from "../api/url"
+import translations from "../i18n/translations.json";
 
-const BASE_URL = "https://alaine-nonpursuant-adhesively.ngrok-free.dev/api";
-
-const dominanceLabels = [
-  "Not at all",
-  "A little",
-  "Moderately",
-  "A lot",
-  "Dominates completely",
+const dominanceLabelKeys = [
+  "not_at_all",
+  "a_little",
+  "moderately",
+  "a_lot",
+  "dominates",
 ];
 
 const sliderItems = [
-  { key: "pleasantness", label: "Pleasant" },
-  { key: "chaotic", label: "Chaotic" },
-  { key: "vibrant", label: "Vibrant" },
-  { key: "uneventful", label: "Uneventful" },
-  { key: "calm", label: "Calm" },
-  { key: "annoyance", label: "Annoying" },
-  { key: "eventfulness", label: "Eventful" },
-  { key: "monotonous", label: "Monotonous" },
+  { key: "pleasantness", labelKey: "pleasant" },
+  { key: "chaotic", labelKey: "chaotic" },
+  { key: "vibrant", labelKey: "vibrant" },
+  { key: "uneventful", labelKey: "uneventful" },
+  { key: "calm", labelKey: "calm" },
+  { key: "annoyance", labelKey: "annoying" },
+  { key: "eventfulness", labelKey: "eventful" },
+  { key: "monotonous", labelKey: "monotonous" },
 ];
 
 const Page6 = () => {
+  const availableLanguages = Object.keys(translations);
+  const [lang, setLang] = useState(availableLanguages[0]);
+  const t = (key) => translations[lang]?.[key] || key;
+
   const audioRef = useRef(null);
   const navigate = useNavigate();
 
@@ -276,6 +280,18 @@ const Page6 = () => {
         <span>Age: {user.age}</span>
       </div>
 
+      <div style={{ marginBottom: "12px" }}>
+      {availableLanguages.map((code) => (
+          <button
+            key={code}
+            onClick={() => setLang(code)}
+            disabled={lang === code}
+          >
+            {translations[code].language_name}
+          </button>
+        ))}
+      </div>
+
       <h3>AUDIO {index + 1} of {audios.length}</h3>
     
       {audioLoading && (
@@ -311,10 +327,10 @@ const Page6 = () => {
         </div>
       )}
 
-      {sliderItems.map(({ key, label }) => (
+      {sliderItems.map(({ key, labelKey }) => (
         <div className="slider-group" key={key}>
           <h4 className="slider-heading">
-            {label} : <span className="slider-value">{ratings[key]}</span>
+            {t(labelKey)} : <span className="slider-value">{ratings[key]}</span>
           </h4>
           <div className="slider-row">
             <span className="slider-end">0</span>
@@ -332,11 +348,11 @@ const Page6 = () => {
             <span className="slider-end">100</span>
           </div>
           <div className="scale-labels">
-            <span>Strongly agree</span>
-            <span>Somewhat agree</span>
-            <span>Neither agree nor disagree</span>
-            <span>Somewhat disagree</span>
-            <span>Strongly disagree</span>
+            <span>{t("Strongly agree")}</span>
+            <span>{t("Somewhat agree")}</span>
+            <span>{t("Neither agree nor disagree")}</span>
+            <span>{t("Somewhat disagree")}</span>
+            <span>{t("Strongly disagree")}</span>
           </div>
         </div>
       ))}
@@ -345,21 +361,21 @@ const Page6 = () => {
         <thead>
           <tr>
             <th></th>
-            {dominanceLabels.map((l) => (
-              <th key={l}>{l}</th>
+            {dominanceLabelKeys.map((l) => (
+              <th key={l}>{t(l)}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {[
-            ["traffic_noise", "Traffic noise"],
-            ["other_noise", "Other noise"],
-            ["human_sounds", "Human sounds"],
-            ["natural_sounds", "Natural sounds"],
+            ["traffic_noise", t("traffic_noise")],
+            ["other_noise", t("other_noise")],
+            ["human_sounds", t("human_sounds")],
+            ["natural_sounds", t("natural_sounds")],
           ].map(([key, label]) => (
             <tr key={key}>
               <td>{label}</td>
-              {dominanceLabels.map((_, i) => (
+              {dominanceLabelKeys.map((_, i) => (
                 <td key={i}>
                   <input
                     type="radio"
